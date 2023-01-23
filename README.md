@@ -15,17 +15,22 @@
 
 - **Phase 1**: Setup core OS + drivers + SSH:
 
-    - [ ] Install Ubuntu as a base OS, because it’s typically the most popular Linux distro for end-users
+    - [x] Install Ubuntu as a base OS, because it’s typically the most popular Linux distro for end-users
 
     - [ ] Ensure BIOS is configured to auto-boot into that OS
 
     - [ ] Set up internet connection and SSH
-
-        - May require ticketing TUD
     
-    - [ ] Set up additional drivers (specificlly, Nvidia)
+        - [x] Plug in to wall
+        - [x] Ensure TUD DHCP assigns the network interfaces an IP (i.e. there's a physical + ethernet + DHCP connection)
+        - [ ] Ticket IT to enable network access from the machine (requires MAC addr)
     
-    - [ ] Create `sudo` accounts for the three of us with SSH access: `adam`, `ajay`, `mathias`
+    - [ ] Set up additional drivers (specificlly, Nvidia, CUDA, etc.)
+    
+    - [ ] Create `sudo` accounts for the three of us with SSH access:
+    
+        - [x] `adam` - for initial setup
+        - [ ] `ajay`, `mathias` for PI access
     
     - [ ] Set up VPN such that users with SSH access an access a remote desktop for the machine.
 
