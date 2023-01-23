@@ -23,7 +23,8 @@
     
         - [x] Plug in to wall
         - [x] Ensure TUD DHCP assigns the network interfaces an IP (i.e. there's a physical + ethernet + DHCP connection)
-        - [ ] Ticket IT to enable network access from the machine (requires MAC addr)
+        - [x] Ticket IT to enable network access from the machine (requires MAC addr) - `C230113189`
+        - [ ] Handle ticket responses, etc. - fully resolve it
     
     - [ ] Set up additional drivers (specificlly, Nvidia, CUDA, etc.)
     
