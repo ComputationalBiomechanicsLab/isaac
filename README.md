@@ -11,6 +11,8 @@
 | `eno1np0` | `3c:ec:ef:ca:9b:70` | middle port |
 | `eno2np1` | `3c:ec:ef:ca:9b:71` | bottom port |
 
+- Current local IP (temporary): `10.211.34.72`
+
 # Current Work Plan
 
 - **Phase 1**: Setup core OS + drivers + SSH:
