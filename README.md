@@ -53,6 +53,10 @@
     - [ ] Setup GitHub repo for documenting, posting issues related to, etc. the machine (e.g. as we have for the CBL one: https://github.com/ComputationalBiomechanicsLab/systems)
     
     - [ ] Build and install any research-level software (OpenSim, FEBio, etc.).
+        - [ ] OpenSim Core (no GUI - annoying to build on Linux)
+        - [ ] OpenSim Creator
+        - [ ] SCONE
+        - [ ] FEBio? Abaqus? Blender? Tensorflow?
         - [ ] Try to document version numbers for the GitHub guide
     
     - [ ] Write user guide, similar to how we already do it for the CBL machine
