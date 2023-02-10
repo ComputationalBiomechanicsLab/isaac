@@ -30,10 +30,10 @@
     
     - [ ] Set up additional drivers (specificlly, Nvidia, CUDA, etc.)
     
-    - [ ] Create `sudo` accounts for the three of us with SSH access:
+    - [ ] Create `sudo` accounts:
     
         - [x] `adam` - for initial setup
-        - [ ] `ajay`, `mathias` for PI access
+        - [ ] ~~`ajay`, `mathias`~~ - establish which users definitely need sudo access, because it's dangerous
     
     - [ ] Set up VPN such that users with SSH access an access a remote desktop for the machine.
 
