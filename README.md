@@ -19,14 +19,14 @@
 
     - [x] Install Ubuntu as a base OS, because it’s typically the most popular Linux distro for end-users
 
-    - [ ] Ensure BIOS is configured to auto-boot into that OS
+    - [x] Ensure BIOS is configured to auto-boot into that OS
 
-    - [ ] Set up internet connection and SSH
+    - [x] Set up internet connection and SSH
     
         - [x] Plug in to wall
         - [x] Ensure TUD DHCP assigns the network interfaces an IP (i.e. there's a physical + ethernet + DHCP connection)
         - [x] Ticket IT to enable network access from the machine (requires MAC addr) - `C230113189`
-        - [ ] Handle ticket responses, etc. - fully resolve it
+        - [x] Handle ticket responses, etc. - fully resolve it
     
     - [ ] Set up additional drivers (specificlly, Nvidia, CUDA, etc.)
     
