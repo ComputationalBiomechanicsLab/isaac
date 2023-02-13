@@ -36,7 +36,7 @@
     
     - [x] Set up VNC such that users with SSH access an access a remote desktop for the machine.
 
-    - [x] Set up a firewall such that the machine only accepts SSH connections (VNC would be *via* an SSH tunnel)
+    - [ ] Set up a firewall such that the machine only accepts SSH connections (VNC would be *via* an SSH tunnel)
     
         - This is so that we know for a fact that the only way to access the machine is via a valid, encrypted, SSH tunnel with an active user account on the machine – it means we don’t have to security review all servers etc. that are running on the machine and we can activate/deactivate people by just deactivating their Linux account (rather than also having to deactivate accounts on other services hosted from the machine)
     
@@ -52,14 +52,14 @@
 
 - **Phase 2**: Research commissioning:
  
-    - [ ] Setup GitHub repo for documenting, posting issues related to, etc. the machine (e.g. as we have for the CBL one: https://github.com/ComputationalBiomechanicsLab/systems)
+    - [x] Setup GitHub repo for documenting, posting issues related to, etc. the machine (e.g. as we have for the CBL one: https://github.com/ComputationalBiomechanicsLab/systems)
     
     - [ ] Build and install any research-level software (OpenSim, FEBio, etc.).
         - [x] Firefox
         - [x] OpenSim Creator
         - [x] Python3
-        - [ ] MATLAB
-        - [ ] Anaconda (installed to `/opt/anaconda`, add to `/etc/profile`)
+        - [x] MATLAB
+        - [x] Anaconda (installed to `/opt/anaconda`, add to `/etc/profile`)
         - [ ] Julia
         - [ ] OpenSim Core (no GUI - annoying to build on Linux)
         - [ ] OpenSim Creator
