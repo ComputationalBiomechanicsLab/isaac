@@ -63,8 +63,9 @@
         - [x] Julia
         - [ ] OpenSim Core (no GUI - annoying to build on Linux)
         - [x] OpenSim Creator
+        - [x] Blender
         - [ ] SCONE
-        - [ ] FEBio? Abaqus? Blender? Tensorflow?
+        - [ ] FEBio? Abaqus? Tensorflow?
         - [ ] Try to document version numbers for the GitHub guide
     
     - [ ] Write user guide, similar to how we already do it for the CBL machine
