@@ -42,13 +42,13 @@
         - This is so that we know for a fact that the only way to access the machine is via a valid, encrypted, SSH tunnel with an active user account on the machine – it means we don’t have to security review all servers etc. that are running on the machine and we can activate/deactivate people by just deactivating their Linux account (rather than also having to deactivate accounts on other services hosted from the machine)
     
     - [ ] Ensure we can all connect to the machine and are happy with the basic connection + desktop setup
-    - [ ] Record network interface information (notably: MAC addresses) for IT ticketing later
-    - [ ] Ticket IT to reconfigure their network such that the machine operates as a server:
+    - [x] Record network interface information (notably: MAC addresses) for IT ticketing later
+    - [x] Ticket IT to reconfigure their network such that the machine operates as a server:
 
-        - [ ] Provide them with a MAC address
-        - [ ] Also request the domain name `isaac.3me.tudelft.nl`
+        - [x] Provide them with a MAC address
+        - [x] Also request the domain name `isaac.3me.tudelft.nl`
 
-    - [ ] Ensure the machine can be connected to remotely via the address, etc.
+    - [x] Ensure the machine can be connected to remotely via the address, etc.
 
 - **Phase 2**: Research commissioning:
  
