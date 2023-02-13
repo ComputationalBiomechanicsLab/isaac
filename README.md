@@ -60,9 +60,9 @@
         - [x] Python3
         - [x] MATLAB
         - [x] Anaconda (installed to `/opt/anaconda`, add to `/etc/profile`)
-        - [ ] Julia
+        - [x] Julia
         - [ ] OpenSim Core (no GUI - annoying to build on Linux)
-        - [ ] OpenSim Creator
+        - [x] OpenSim Creator
         - [ ] SCONE
         - [ ] FEBio? Abaqus? Blender? Tensorflow?
         - [ ] Try to document version numbers for the GitHub guide
