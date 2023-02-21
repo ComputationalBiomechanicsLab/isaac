@@ -12,6 +12,8 @@
 | `eno2np1` | `3c:ec:ef:ca:9b:71` | bottom port |
 
 - Current local IP (temporary): `10.211.34.72`
+- `uname -a`: `Linux isaac 5.15.0-60-generic #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux`
+- `nvidia-smi`: `NVIDIA-SMI 525.78.01    Driver Version: 525.78.01    CUDA Version: 12.0`
 
 # Current Work Plan
 
