@@ -51,7 +51,7 @@
         - [x] Also request the domain name `isaac.3me.tudelft.nl`
 
     - [x] Ensure the machine can be connected to remotely via the address, etc.
-    - [ ] List any relevant driver/OS versions in this README
+    - [x] List any relevant driver/OS versions in this README
 
 - **Phase 2**: Research commissioning:
  
