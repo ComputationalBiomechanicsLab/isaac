@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+useradd --create-home --user-group --shell /bin/bash "$@"

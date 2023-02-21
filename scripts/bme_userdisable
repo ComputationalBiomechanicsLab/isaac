@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo chage -E0 $1

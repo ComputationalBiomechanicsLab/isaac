@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# key points:
+#
+# - only ssh connections are accepted externally. This means that all inbound
+#   connections to the node *must* go via SSH.
+#
+# - This makes `nmap` + service hacks difficult for hackers to do. It
+#   essentially means that a would-be hacker must first hack SSH, or a user, to
+#   get (for most users, non-root) access to the machine.
+#
+# - Any user can still host a server on the usual ports. This lets them run most
+#   software, web UIs, etc.
+#
+# - The above two constraints combined means that users *must* forward traffic
+#   to any server on the workstation *via* the SSH connection. This enforces
+#   encryption and makes it easier for a sysadmin to cut things off (just change
+#   the user's password and nuke their .ssh keys)
+#
+# - The workstation can connect to any other service that it wants (i.e. there
+#   are no OUTPUT rules). So the workstation can browse the internet, connect to
+#   GitHub, Dropbox, etc. with no restrictions. The workstation isn't supposed
+#   to be super-secure, just secure enough to stop basic network scanners from
+#   hacking it.
+
+ssh_port=22
+
+# accept SSH connections
+iptables --append INPUT --protocol tcp --dport ${ssh_port} --jump ACCEPT
+
+# TODO: unsure about this: see: https://serverfault.com/questions/214996/iptables-allow-ssh-access-only-nothing-else-in-or-out
+iptables --append INPUT --match conntrack --ctstate ESTABLISHED,RELATED --jump ACCEPT
+
+# accept loopback packets (that is, packets that originated from this computer
+# workstation and are destined for this computer)
+iptables --append INPUT --in-interface lo --jump ACCEPT
+
+# drop anything that isn't (externally) from SSH or (internally) from loopback
+iptables --append INPUT --jump REJECT

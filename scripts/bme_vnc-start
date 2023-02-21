@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+BME_VNC_RESOLUTION=${BME_VNC_RESOLUTION:-1920x1080}
+
+# start a VNC server that listens locally (must be accessed via SSH)
+
+display_id=":$(id -u)"
+vncserver -kill "${display_id}"
+vncserver "${display_id}" -localhost -nolisten -geometry ${BME_VNC_RESOLUTION} -depth 24
+port=$(($(id -u)+5900))
+cat <<EOF
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                       !!
+!!  A VNC server was started at vnc://localhost:${port}  !!
+!!                                                       !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+To connect:
+
+- Set up your SSH connection to tunnel from your computer to this port
+  (i.e. open a port on your computer that connects to port ${port} on
+  this machine via the SSH tunnel)
+
+  - PUTTY (Windows):
+    - see: 
+      https://www.skyverge.com/blog/how-to-set-up-an-ssh-tunnel-with-putty/ 
+      https://blog.devolutions.net/2017/4/how-to-configure-an-ssh-tunnel-on-putty
+
+    - you want a 'source port' of whatever you want to
+      connect to locally (e.g. when you connect to 'localhost:some-port'
+      in the remote desktop connection client) with a destination of 
+      'localhost:${port}'
+
+   - SSH CLI (Linux/OSX):
+
+     - Add a port forwarding argument: 'ssh -L some-port:localhost:${port}'
+
+   - PowerShell/cmd.exe + VNC Viewer (Windows):
+
+     - Open a terimnal/powershell
+     - Connect to this node with a tunnel: 'ssh -L 59000:localhost:${port} username@isaac.3me.tudelft.nl'
+     - Open VNC viewer
+     - Connect to 'localhost:59000'
+EOF

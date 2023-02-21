@@ -1,0 +1,23 @@
+Hi $name,
+
+Your user account has been created on the system:
+
+    username: $username
+    password: $temppassword
+    (to change your password, type `passwd` or `passwd $username` in the command-line on first login)
+
+See the "Walkthough" section at the following link for more information:
+
+    https://github.com/ComputationalBiomechanicsLab/isaac
+
+Your account gives you access to a standalone Linux machine that has typical biomechanics software installed on it. All connections to the machine must be made via `ssh`. Even remote desktop (VNC) connections go via an `ssh` tunnel. Once you're connected, you can (and should) change your password via SSH terminal using the command `passwd` (this is explained in the walkthrough).
+
+General points:
+
+- If you find the guide is unclear, or you'd prefer to work through the setup together, then arrange a meeting with an administrator, who should be able to help you.
+
+- The computer is running a bare-bones install of Ubuntu, toolchains (e.g. Anaconda), and some biomechanics-specific software (e.g. OpenSim). If you need something newer, or different, for your research--and it must be installed system-wide, or with sudo--then ask an administrator. Multiple groups share the machine: an administrator is best-placed to know how to get your software working on the machine without disturbing others' workflows.
+
+- You are permitted to run your own applications, code (e.g. python scripts, C++, etc.) on the machine without asking an administrator. You only need an administrator's help if installing/running your code requires root/sudo access (e.g. because it *must* be installed system-wide). This usually isn't a problem for research code.
+
+- Isaac Admin

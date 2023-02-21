@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+echo "Stopping existing VNC server (if any)"
+bme_vnc-stop
+
+echo "aggro-cleaning out any X11 sessions that may be left alive after stopping the server"
+pkill --uid ${UID} systemd
+rm -f /tmp/.X${UID}-lock /tmp/.X11-unix/X${UID}
+
+echo "Starting new VNC server"
+bme_vnc-start
