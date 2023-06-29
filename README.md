@@ -126,7 +126,7 @@ $ ssh-keygen -l -f key.pub -E sha256
     
     - [x] Set up VNC such that users with SSH access an access a remote desktop for the machine.
 
-    - [ ] Set up a firewall such that the machine only accepts SSH connections (VNC would be *via* an SSH tunnel)
+    - [x] Set up a firewall such that the machine only accepts SSH connections (VNC would be *via* an SSH tunnel)
     
         - This is so that we know for a fact that the only way to access the machine is via a valid, encrypted, SSH tunnel with an active user account on the machine – it means we don’t have to security review all servers etc. that are running on the machine and we can activate/deactivate people by just deactivating their Linux account (rather than also having to deactivate accounts on other services hosted from the machine)
     
