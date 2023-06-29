@@ -25,15 +25,23 @@
 
 ssh_port=22
 
+# accept ICMP ping requests (handy for checking if the server is up)
+iptables --append INPUT --protocol icmp --jump ACCEPT
+ip6tables --append INPUT --protocol icmp --jump ACCEPT
+
 # accept SSH connections
 iptables --append INPUT --protocol tcp --dport ${ssh_port} --jump ACCEPT
+ip6tables --append INPUT --protocol tcp --dport ${ssh_port} --jump ACCEPT
 
 # TODO: unsure about this: see: https://serverfault.com/questions/214996/iptables-allow-ssh-access-only-nothing-else-in-or-out
 iptables --append INPUT --match conntrack --ctstate ESTABLISHED,RELATED --jump ACCEPT
+ip6tables --append INPUT --match conntrack --ctstate ESTABLISHED,RELATED --jump ACCEPT
 
 # accept loopback packets (that is, packets that originated from this computer
 # workstation and are destined for this computer)
 iptables --append INPUT --in-interface lo --jump ACCEPT
+ip6tables --append INPUT --in-interface lo --jump ACCEPT
 
 # drop anything that isn't (externally) from SSH or (internally) from loopback
 iptables --append INPUT --jump REJECT
+ip6tables --append INPUT --jump REJECT
