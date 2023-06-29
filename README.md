@@ -6,6 +6,12 @@
 
 **tl;dr**: 2x64-core processors (256 threads), 256 GB memory, 2x RTX A5000 GPUs, 2 TB SSD, 8 TB HDD
 
+| Interface | MAC Address | Physical Location |
+| - | - | - |
+| `enxb03af2b6059f` | `b0:3a:f2:b6:05:9f` | top port |
+| `eno1np0` | `3c:ec:ef:ca:9b:70` | middle port (this is what is plugged into the TUD network) |
+| `eno2np1` | `3c:ec:ef:ca:9b:71` | bottom port |
+
 ```bash
 # count physical processors
 $ cat /proc/cpuinfo | grep 'physical id' | sort | uniq | wc -l
@@ -38,35 +44,6 @@ nvme0n1                   259:0    0   1.8T  0 disk
 
 **tl;dr**: Ubuntu 22, Logical Volume Management (LVM)
 
-```bash
-# show ubuntu version
-$ lsb_release -a | grep "Description"
-Description:    Ubuntu 22.04.2 LTS
-# show LVM physical layer
-$ pvdisplay
---- Physical volume ---
-PV Name               /dev/nvme0n1p3
-VG Name               ubuntu-vg
-PV Size               <1.82 TiB / not usable 4.00 MiB
-Allocatable           yes
-PE Size               4.00 MiB
-Total PE              476150
-Free PE               450550
-Allocated PE          25600
-PV UUID               T3cJ2F-LHRT-kvBq-fcpK-ie5A-LEcZ-YvAUWf
-
---- Physical volume ---
-PV Name               /dev/sda
-VG Name               vg0
-PV Size               <7.28 TiB / not usable <1.34 MiB
-Allocatable           yes
-PE Size               4.00 MiB
-Total PE              1907721
-Free PE               1907721
-Allocated PE          0
-PV UUID               NlZcEd-Cw7y-FB8L-BwpR-hqOy-kVgv-oX3MCT
-```
-
 | Server Detail | Value | Comment |
 | - | - | - |
 | Short name | isaac | Used in any documentation etc. |
@@ -86,11 +63,6 @@ $ ssh-keygen -l -f key.pub -E sha256
 | SSH ECDSA | isaac.3me.tudelft.nl ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEYIsORj6P8jGCvJFbQngiesjF0DGvtZunslHiRkTICdCsQQDLqsPORY/FcFNRyB04so1Mf1hVE5ZmlHYILnXzQ=
 
 
-| interface | `link/ether` | phyiscal location |
-| - | - | - |
-| `enxb03af2b6059f` | `b0:3a:f2:b6:05:9f` | top port |
-| `eno1np0` | `3c:ec:ef:ca:9b:70` | middle port |
-| `eno2np1` | `3c:ec:ef:ca:9b:71` | bottom port |
 # Computer Details (Work in Progress)
 
 - hostname: `isaac`
@@ -168,3 +140,89 @@ $ ssh-keygen -l -f key.pub -E sha256
     - Mostly leave the machine alone until someone actually has a problem
     - Use the GitHub repo to document problems/changes
     - Occasionally (every couple of months) login and ensure there’s enough disk space, deactivate unused user accounts, generally just ensure the machine’s mostly fine
+    - 
+
+# Notes
+
+- LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
+```bash
+# the OS+homedirs are currently on a volume group for the SSD
+$ sudo vgdisplay
+  --- Volume group ---
+  VG Name               ubuntu-vg
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  5
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <1.82 TiB
+  PE Size               4.00 MiB
+  Total PE              476150
+  Alloc PE / Size       476134 / <1.82 TiB
+  Free  PE / Size       16 / 64.00 MiB
+  VG UUID               H6iHHH-op2X-thyQ-19NJ-aDDd-tDwl-hPFKpj
+
+  --- Volume group ---
+  VG Name               vg0
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <7.28 TiB
+  PE Size               4.00 MiB
+  Total PE              1907721
+  Alloc PE / Size       0 / 0
+  Free  PE / Size       1907721 / <7.28 TiB
+  VG UUID               SayMzO-67ou-P0fK-XGOp-dQxz-ZlQb-F3wQdW
+
+# And those groups are sliced up into "OS" and "homedirs":
+$ sudo lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/ubuntu-vg/ubuntu-lv
+  LV Name                ubuntu-lv
+  VG Name                ubuntu-vg
+  LV UUID                rTjqnp-j9tz-nVLh-kKJC-9TpN-4qig-9N2Mb6
+  LV Write Access        read/write
+  LV Creation host, time ubuntu-server, 2023-01-23 14:07:13 +0000
+  LV Status              available
+  # open                 1
+  LV Size                100.00 GiB
+  Current LE             25600
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:0
+
+  --- Logical volume ---
+  LV Path                /dev/ubuntu-vg/homedirs
+  LV Name                homedirs
+  VG Name                ubuntu-vg
+  LV UUID                HCdDUH-0PZ8-CFTX-uBDR-vwWe-FcvS-eV9zT3
+  LV Write Access        read/write
+  LV Creation host, time isaac, 2023-06-29 12:18:03 +0000
+  LV Status              available
+  # open                 0
+  LV Size                <1.72 TiB
+  Current LE             450534
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:1
+```
