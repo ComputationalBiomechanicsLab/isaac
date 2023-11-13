@@ -194,6 +194,8 @@ tunnel**, so that you can then remotely control `isaac` via a remote desktop.
 ---
 ### 6. Celebrate 🎉
 
+![screenshot](images/vnc-desktop-screenshot.png)
+
 If you see a remote desktop, you're done :smile:!
 
 
