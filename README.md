@@ -58,7 +58,7 @@ into a server, you gain access to a remote terminal on `isaac` that you can use 
 run things on it. You always need an SSH connection to connect to `isaac` - even
 if you ultimately plan on using VNC to forward a remote GUI desktop. 
 
-To set up an SSH connection to `isaac.3me.tudelft.nl` on a Windows machine:
+**To set up an SSH connection to `isaac.3me.tudelft.nl` on a Windows machine**:
 
 - Open a Windows PowerShell window
 
@@ -90,7 +90,7 @@ Each user on `isaac` hosts their own VNC server within their user account,
 which means that you can reset it, keep it running overnight while your
 laptop is turned off, change the password, etc.
 
-To set up a VNC server on `isaac`:
+**To set up a VNC server on `isaac`**:
 
 - In your SSH session (established above) run `bme_vnc-start`. If
   necessary, type a new VNC password. You can change the password
@@ -120,6 +120,8 @@ connection), so we need to set up a tunnel.
 through the SSH connection through to the VNC server you booted in the
 previous step.
 
+**To setup an SSH tunnel for your VNC client on isaac**:
+
 - (If your SSH session is still open in a terminal), exit your existing
   SSH connection to `isaac` by either:
 
@@ -144,6 +146,11 @@ ssh -L 59000:localhost:<your VNC server port> YOUR_USERNAME@isaac.3me.tudelft.nl
 
 ### 4. Install + setup VNC client on your machine <a name="walkthrough-step-4"></a>
 
+To connect to the VNC server you booted on `isaac` in previous steps, you'll need a
+VNC client.
+
+**To install a VNC client on your computer**:
+
 - Download a VNC client. I used VNC Viewer, from [here](https://www.realvnc.com/en/connect/download/viewer/)
 
 - Other VNC clients (e.g. Remmina) also seem to work, but I have only tested this
@@ -151,6 +158,11 @@ ssh -L 59000:localhost:<your VNC server port> YOUR_USERNAME@isaac.3me.tudelft.nl
 
 
 ### 5. Use the client to connect to the VNC server via the tunnel <a name="walkthrough-step-5"></a>
+
+Once you have a VNC client, you need to boot it up and connect to `isaac` **via the ssh
+tunnel**, so that you can then remotely control `isaac` via a remote desktop.
+
+**To connect to your VNC server on `isaac` with the VNC client on your computer**:
 
 - In your VNC client, connect to `localhost:59000`, which is the
   local-side of your (opened in the previous step) SSH tunnel to your
