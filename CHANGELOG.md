@@ -6,3 +6,5 @@ All notable changes to this project will be documented here. The format is based
 
 - `README.md` was updated with a user-facing walkthrough, relevant sections, etc.
 - This `CHANGELOG.md` was added to the repo to track changes over time
+- SCONE was downloaded from SimTK and installed via `sudo apt install ./scone_2.2.1_amd64.deb` (#16)
+
