@@ -25,7 +25,7 @@ just want to reconnect:
 - Open a terminal
 - Run `ssh -L 59000:localhost:<your vnc port> username@isaac.3me.tudelft.nl`
 - Type in your password (**remember, you can't see it being typed in**)
-- Open VNC viewer on your Windows machine
+- Open your VNC client (VNC Connect, TightVNC Viewer, etc.) on your Windows machine
 - Use your VNC password to connect
 
 > ℹ️ **Note**
@@ -42,9 +42,10 @@ This walkthrough sets up:
 1. Using `ssh` to connect a terminal to `isaac`
 2. Launching a personal VNC server on `isaac`
 3. Opening an SSH tunnel to the VNC server
-4. Setting up a VNC client (VNC Viewer) on your computer
+4. Setting up a VNC client on your computer
 5. Using the VNC client to connect to your VNC server via the SSH tunnel
 
+---
 ### 1. Connect to the server with SSH <a name="walkthrough-step-1"></a>
 
 > ℹ️ **Note**: this assumes you already have SSH credentials
@@ -78,7 +79,7 @@ if you ultimately plan on using VNC to forward a remote GUI desktop.
 - If you only need  terminal access, you can stop reading this
   walkthrough - you're done :smile:
 
-
+---
 ### 2. Boot a VNC server on `isaac` <a name="walkthrough-step-2"></a>
 
 A VNC server is a piece of software that runs hosts a GUI desktop on
@@ -113,6 +114,7 @@ running on `isaac`. Remember, though, that the only way to connect to it
 is via an SSH tunnel (isaac's and TUD's firewalls only permit the SSH
 connection), so we need to set up a tunnel.
 
+---
 ### 3. Setup a SSH tunnel to the VNC server <a name="walkthrough-step-3"></a>
 
 `isaac` only allows external connections via SSH. All services
@@ -143,20 +145,23 @@ ssh -L 59000:localhost:<your VNC server port> YOUR_USERNAME@isaac.3me.tudelft.nl
   look identical to your previous SSH session, but it now *also* tunnels that you
   make to `localhost:59000` on your machine to `<your VNC server port>` on `isaac`.
 
-
+---
 ### 4. Install + setup VNC client on your machine <a name="walkthrough-step-4"></a>
 
 To connect to the VNC server you booted on `isaac` in previous steps, you'll need a
-VNC client.
+VNC client. This walkthrough outlines using TightVNC which, while barebones-looking, is
+functional and open-source.
+
+> Note: Previous versions of this guide used VNC Connect. This guide is essentially the
+> same as the previous versions, but was switched to TightVNC because of license concerns.
 
 **To install a VNC client on your computer**:
 
-- Download a VNC client. I used VNC Viewer, from [here](https://www.realvnc.com/en/connect/download/viewer/)
+- Download TightVNC from: https://www.tightvnc.com/download.php
+- Install it
+- Open it up, it should present a UI where you can enter a `Remote Host` etc.
 
-- Other VNC clients (e.g. Remmina) also seem to work, but I have only tested this
-  walkthrough with VNC Viewer on Windows
-
-
+---
 ### 5. Use the client to connect to the VNC server via the tunnel <a name="walkthrough-step-5"></a>
 
 Once you have a VNC client, you need to boot it up and connect to `isaac` **via the ssh
@@ -185,8 +190,11 @@ tunnel**, so that you can then remotely control `isaac` via a remote desktop.
 
 - Once connected, you should see a (somewhat rough-looking) Linux
   desktop
-  
-You're done! woohoo! :smile:
+
+---
+### 6. Celebrate 🎉
+
+If you see a remote desktop, you're done :smile:!
 
 
 ## 🤖 Hardware Details <a name="hardware-details"></a>
