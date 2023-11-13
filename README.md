@@ -7,7 +7,7 @@
 - [Quickstart for existing users (Windows)](#quickstart)
 - [Walkthrough for new users (Windows)](#walkthrough)
   1. [Connect to the server with SSH](#walkthrough-step-1)
-  2. [Boot a VNC server on `cbl1`](#walkthrough-step-2)
+  2. [Boot a VNC server on `isaac`](#walkthrough-step-2)
   3. [Setup a SSH tunnel to the VNC server](#walkthrough-step-3)
   4. [Install + setup VNC client on your machine](#walkthrough-step-4)
   5. [Use the client to connect to the VNC server via the tunnel](#walkthrough-step-5)
@@ -19,41 +19,46 @@
 
 ## ⚡ Quickstart for existing users (Windows) <a name="quickstart"></a>
 
-This assumes you already went through the extensive walthrough below and
+This assumes you already went through the [walkthrough](#walkthrough) below and
 just want to reconnect:
 
-- Open windows terminal
-- Run `ssh -L 59000:localhost:<your vpn port> username@isaac.3me.tudelft.nl`
+- Open a terminal
+- Run `ssh -L 59000:localhost:<your vnc port> username@isaac.3me.tudelft.nl`
 - Type in your password (**remember, you can't see it being typed in**)
 - Open VNC viewer on your Windows machine
 - Use your VNC password to connect
-  - You can reset your VNC password from an SSH terminal with `bme_vnc-passwd`
+
+> ℹ️ **Note**
+>
+> - If you don't remember your user password, you'll have to ask an admin to reset it for you
+> - If you don't remember your VNC port, you can restart your VNC server with `bme_vnc-restart`
+> - If you don't remember your VNC password, you can reset it via your SSH session with `bme_vnc-passwd`
 
 
 ## 🚶 Walkthrough (Windows - you're a new user) <a name="walkthrough"></a>
 
-This walkthrough essentially sets up:
+This walkthrough sets up:
 
-- Using `ssh` to connect a terminal to `cbl1`
-- Launching a personal VNC server on `cbl1`
-- Opening an SSH tunnel to the VNC server
-- Using VNC Viewer to connect to the tunneled VNC server
+1. Using `ssh` to connect a terminal to `isaac`
+2. Launching a personal VNC server on `isaac`
+3. Opening an SSH tunnel to the VNC server
+4. Setting up a VNC client (VNC Viewer) on your computer
+5. Using the VNC client to connect to your VNC server via the SSH tunnel
 
 ### 1. Connect to the server with SSH <a name="walkthrough-step-1"></a>
 
-> **Note**: this assumes you have been given SSH credentials by (e.g.) an
-> admin. Your credentials will be a **username** + **password** combo. This combo
-> differs from your general TU Delft credentials. Once you have logged into
-> `cbl1.3me.tudelft.nl`, you can change your password in the terminal with `passwd`
+> ℹ️ **Note**: this assumes you already have SSH credentials
+>
+> - An isaac admin will give you a `username` + `password` combo. The combo differs from your TU Delft credentials
+> - Once you have logged into `isaac.3me.tudelft.nl`, you can change your password in the terminal with `passwd`
 
-All connections to `cbl1.3me.tudelft.nl` must go via an SSH tunnel. SSH is a
+All connections to `isaac.3me.tudelft.nl` must go via an SSH tunnel. SSH is a
 standard method for creating a secure connection to a remote machine. By "SSHing"
-into a server, you gain access to a terminal that can be used to run things on
-the server (via a command prompt).
+into a server, you gain access to a remote terminal on `isaac` that you can use to
+run things on it. You always need an SSH connection to connect to `isaac` - even
+if you ultimately plan on using VNC to forward a remote GUI desktop. 
 
-You always need an SSH connection to connect to `cbl1` - even 
-if you actually want a GUI (e.g. a remote desktop). Later steps in this guide
-describe setting up a remote desktop *via* the SSH connection.
+To set up an SSH connection to `isaac.3me.tudelft.nl` on a Windows machine:
 
 - Open a Windows PowerShell window
 
@@ -62,29 +67,37 @@ describe setting up a remote desktop *via* the SSH connection.
   - Click "Open PowerShell Window Here"
 
 - SSH into the server with your login credentials by typing `ssh
-  username@cbl1.3me.tudelft.nl`
+  YOUR_USERNAME@isaac.3me.tudelft.nl`
 
-- Enter your password. **Note: you can't see any changes while typing
-  the password in (it's a security feature)**
+- Enter your password. **Note: you can't see anything being typed while typing
+  your password in (it's a security feature)**
 
-- You should now have an SSH connection to `cbl1.3me.tudelft.nl`. It will print a
+- You should now have an SSH connection to `isaac.3me.tudelft.nl`. It will print a
   welcome message, etc.
 
 - If you only need  terminal access, you can stop reading this
   walkthrough - you're done :smile:
 
 
-### 2. Boot a VNC server on `cbl1` <a name="walkthrough-step-2"></a>
+### 2. Boot a VNC server on `isaac` <a name="walkthrough-step-2"></a>
 
-A VNC client is used to "remote desktop" connect to a VNC server on
-`cbl1.3me.tudelft.nl`. Each user runs their own VNC server on `cbl1`.
+A VNC server is a piece of software that runs hosts a GUI desktop on
+a machine (here, it'll be hosting a desktop *from* `isaac`). A VNC
+client is a piece of software that connects to VNC servers and
+presents the remote desktop to a user.
 
-- In your SSH session (established above) run `cbl_vnc-start`. If
+Each user on `isaac` hosts their own VNC server within their user account,
+which means that you can reset it, keep it running overnight while your
+laptop is turned off, change the password, etc.
+
+To set up a VNC server on `isaac`:
+
+- In your SSH session (established above) run `bme_vnc-start`. If
   necessary, type a new VNC password. You can change the password
-  later with `cbl_vnc-passwd`.
+  later with `bme_vnc-passwd`.
 
-- The `cbl_vnc-start` command should, before completing, print some
-  help documentation. From this, **you need to rememeber**:
+- The `bme_vnc-start` command should, before completing, print your
+  VNC server's details. **You should note down**:
 
   - The VNC password you set
     - **this is different from your SSH password**
@@ -92,56 +105,56 @@ A VNC client is used to "remote desktop" connect to a VNC server on
     - It does not need to be secure, because your VNC connection
       always goes via your (secure) SSH connection
   - The VNC server's port, printed in the terminal (e.g. `6901`)
-    - The `cbl_vnc-start` should print this in a large banner, or some
+    - The `bme_vnc-start` should print this in a large banner, or some
       explanation text
 
-- A VNC server is now running on `cbl1`. However, it is hidden behind
-  `cbl1`'s firewall, which only permits SSH connections.
-
+After running `bme_vnc-start`, your VNC server should now be running on
+running on `isaac`. Remember, though, that the only way to connect to it
+is via an SSH tunnel (isaac's and TUD's firewalls only permit the SSH
+connection), so we need to set up a tunnel.
 
 ### 3. Setup a SSH tunnel to the VNC server <a name="walkthrough-step-3"></a>
 
-`cbl1` only allows external connections via SSH. All services
+`isaac` only allows external connections via SSH. All services
 (e.g. VNC) must connect via an SSH tunnel. This step sets up a tunnel
 through the SSH connection through to the VNC server you booted in the
 previous step.
 
-- Exit the SSH connection to `cbl1` that was used in previous steps by
-  either:
+- (If your SSH session is still open in a terminal), exit your existing
+  SSH connection to `isaac` by either:
 
   - Typing `exit` in the terminal (to `exit` the SSH session)
   - Pressing CTRL+D to interrupt+exit the terminal
   - Closing the Powershell window
 
-- Open a new SSH session to `cbl1` with tunelling enabled by running
+- Open a new SSH session to `isaac` with tunelling enabled by running
   the command below (note: `<your VNC server port>` is printed during
   the previous step):
 
 ```bash
-ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
+ssh -L 59000:localhost:<your VNC server port> YOUR_USERNAME@isaac.3me.tudelft.nl
 
-# example: ssh -L 59000:localhost:6901 adam@cbl1.3me.tudelft.nl
+# example: ssh -L 59000:localhost:6901 adam@isaac.3me.tudelft.nl
 ```
 
-- You should now have a new SSH session open that looks exactly like
-  the previous one. It is essentially the same, but now *also* tunnels
-  any connections to `localhost:59000` on your machine to `<your VNC
-  server port>` on `cbl1`.
+- Your terminal should now be connected via a new SSH session to `isaac`. It will
+  look identical to your previous SSH session, but it now *also* tunnels that you
+  make to `localhost:59000` on your machine to `<your VNC server port>` on `isaac`.
 
 
 ### 4. Install + setup VNC client on your machine <a name="walkthrough-step-4"></a>
 
 - Download a VNC client. I used VNC Viewer, from [here](https://www.realvnc.com/en/connect/download/viewer/)
 
-- Other VNC clients (e.g. Remmina) also seem to work, but I only
-  tested with VNC Viewer on Windows
+- Other VNC clients (e.g. Remmina) also seem to work, but I have only tested this
+  walkthrough with VNC Viewer on Windows
 
 
 ### 5. Use the client to connect to the VNC server via the tunnel <a name="walkthrough-step-5"></a>
 
 - In your VNC client, connect to `localhost:59000`, which is the
   local-side of your (opened in the previous step) SSH tunnel to your
-  VNC server (also a previous step) on `cbl1`
+  VNC server (also a previous step) on `isaac`
 
 - If you receive warnings about connection security (e.g. encyption)
   you can ignore these. The connection between the VNC client and
@@ -153,7 +166,7 @@ ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
   client.
 
   - Note: you can change your password in the SSH session with
-    `cbl_vnc-passwd`
+    `isaac_vnc-passwd`
 
   - Note #2: VNC passwords are usually max. 6 chars, so your usual
     password might've been truncated
