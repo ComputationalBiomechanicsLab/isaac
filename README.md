@@ -264,17 +264,18 @@ $ ssh-keygen -l -f key.pub -E sha256
 | Software Package | Installation Method | Notes |
 | - | - | - |
 | Firefox | apt | Primary Web Browser |
-| OpenSim Creator | manual source build + install | To validate @adamkewley's purpose in life |
-| Python3 | apt | `Python 3.10` |
+| OpenSim Creator | manual source build + install | Validates @adamkewley's purpose in life |
+| Python3 | apt | `Python 3.11.5` |
 | MATLAB | manual binary install | R2022b |
-| Anaconda | manual binary install | Installed to `/opt/anaconda`, added to `etc/profile`, so that all users can use `conda` etc in their terminals |
+| Anaconda | manual binary install | Installed to `/opt/anaconda`. Added to `PATH` via `etc/profile` |
 | Julia | apt | 1.8.5 |
-| `opensim-core` | manual source build + install | Built + installed with script in this repo, has Moco and python support |
-| Blender | manual binary install | 3.4.1 |
+| `opensim-core` | manual source build + install | `4.4.1`, installed in `/usr/local`, see `setup_scripts/opensim.sh` for build details |
+| Blender | manual binary install | `3.4.1`` |
 | SCONE | manual binary install | TODO |
 | FEBio | manual binary install | TODO |
 | Abaqus | manual binary install | TODO |
 | Tensorflow | TODO | TODO |
+| `gfortran` / `gcc` / `g++` | apt | `11.4.0` |
 
 
 ## F&Qs
