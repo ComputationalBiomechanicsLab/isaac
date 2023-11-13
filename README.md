@@ -1,18 +1,23 @@
-# `isaac.3me.tudelft.nl`
+# 🖥️ `isaac.3me.tudelft.nl`
 
 > A high-powered shared computer operated by the Biomechanical Engineering Department at TU Delft
 
-## Table of Contents
+## 📖 Table of Contents
 
 - [Quickstart for existing users (Windows)](#quickstart)
 - [Walkthrough for new users (Windows)](#walkthrough)
+  1. [Connect to the server with SSH](#walkthrough-step-1)
+  2. [Boot a VNC server on `cbl1`](#walkthrough-step-2)
+  3. [Setup a SSH tunnel to the VNC server](#walkthrough-step-3)
+  4. [Install + setup VNC client on your machine](#walkthrough-step-4)
+  5. [Use the client to connect to the VNC server via the tunnel](#walkthrough-step-5)
 - [Hardware Details](#hardware-details)
 - [OS Details](#os-details)
 - [SSH Details](#ssh-details)
 - [User Software Details](#user-software-details)
 - [Other Notes](#other-notes)
 
-## Quickstart for existing users (Windows) <a name="quickstart"></a>
+## ⚡ Quickstart for existing users (Windows) <a name="quickstart"></a>
 
 This assumes you already went through the extensive walthrough below and
 just want to reconnect:
@@ -25,7 +30,7 @@ just want to reconnect:
   - You can reset your VNC password from an SSH terminal with `bme_vnc-passwd`
 
 
-## Walkthrough (Windows - you're a new user) <a name="walkthrough"></a>
+## 🚶 Walkthrough (Windows - you're a new user) <a name="walkthrough"></a>
 
 This walkthrough essentially sets up:
 
@@ -34,7 +39,7 @@ This walkthrough essentially sets up:
 - Opening an SSH tunnel to the VNC server
 - Using VNC Viewer to connect to the tunneled VNC server
 
-### 1. Connect to the server with SSH
+### 1. Connect to the server with SSH <a name="walkthrough-step-1"></a>
 
 > **Note**: this assumes you have been given SSH credentials by (e.g.) an
 > admin. Your credentials will be a **username** + **password** combo. This combo
@@ -69,7 +74,7 @@ describe setting up a remote desktop *via* the SSH connection.
   walkthrough - you're done :smile:
 
 
-### 2. Boot a VNC server on `cbl1`
+### 2. Boot a VNC server on `cbl1` <a name="walkthrough-step-2"></a>
 
 A VNC client is used to "remote desktop" connect to a VNC server on
 `cbl1.3me.tudelft.nl`. Each user runs their own VNC server on `cbl1`.
@@ -94,7 +99,7 @@ A VNC client is used to "remote desktop" connect to a VNC server on
   `cbl1`'s firewall, which only permits SSH connections.
 
 
-### 3. Setup a SSH tunnel to the VNC server
+### 3. Setup a SSH tunnel to the VNC server <a name="walkthrough-step-3"></a>
 
 `cbl1` only allows external connections via SSH. All services
 (e.g. VNC) must connect via an SSH tunnel. This step sets up a tunnel
@@ -124,7 +129,7 @@ ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
   server port>` on `cbl1`.
 
 
-### 4. Install + setup VNC client on your machine
+### 4. Install + setup VNC client on your machine <a name="walkthrough-step-4"></a>
 
 - Download a VNC client. I used VNC Viewer, from [here](https://www.realvnc.com/en/connect/download/viewer/)
 
@@ -132,7 +137,7 @@ ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
   tested with VNC Viewer on Windows
 
 
-### 5. Use the client to connect to the VNC server via the tunnel
+### 5. Use the client to connect to the VNC server via the tunnel <a name="walkthrough-step-5"></a>
 
 - In your VNC client, connect to `localhost:59000`, which is the
   local-side of your (opened in the previous step) SSH tunnel to your
@@ -159,7 +164,7 @@ ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
 You're done! woohoo! :smile:
 
 
-## Hardware Details <a name="hardware-details"></a>
+## 🤖 Hardware Details <a name="hardware-details"></a>
 
 **tl;dr**: 2x64-core processors (256 threads), 256 GB memory, 2x RTX A5000 GPUs, 2 TB SSD, 8 TB HDD
 
@@ -197,7 +202,7 @@ nvme0n1                   259:0    0   1.8T  0 disk
   └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /var/snap/firefox/common/host-hunspell
 ```
 
-## OS Details <a name="os-details"></a>
+## 🕹️ OS Details <a name="os-details"></a>
 
 **tl;dr**: Ubuntu 22, installed with Logical Volume Management (LVM)
 
@@ -208,7 +213,7 @@ nvme0n1                   259:0    0   1.8T  0 disk
 | Internet Domain Name | `isaac.3me.tudelft.nl` | Globally true |
 | Firewall | SSH (TCP/22) only (+ICMP) | All connections must be tunneled via SSH |
 
-## SSH Details <a name="ssh-details"></a>
+## 🔒 SSH Details <a name="ssh-details"></a>
 
 ```bash
 $ ssh-keyscan -t ecdsa isaac.3me.tudelft.nl > key.pub
@@ -219,7 +224,7 @@ $ ssh-keygen -l -f key.pub -E sha256
 ```
 | SSH ECDSA | isaac.3me.tudelft.nl ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEYIsORj6P8jGCvJFbQngiesjF0DGvtZunslHiRkTICdCsQQDLqsPORY/FcFNRyB04so1Mf1hVE5ZmlHYILnXzQ=
 
-## User Software Details <a name="user-software-details"></a>
+## 💾 User Software Details <a name="user-software-details"></a>
 
 | Software Package | Installation Method | Notes |
 | - | - | - |
@@ -236,9 +241,12 @@ $ ssh-keygen -l -f key.pub -E sha256
 | Abaqus | manual binary install | TODO |
 | Tensorflow | TODO | TODO |
 
-# Other Notes <a name="other-notes"></a>
+# 🗒️ Other Notes <a name="other-notes"></a>
 
-- LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
+## Logical Volume Management (LVM) Commands
+
+LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
+
 ```bash
 # the OS+homedirs are currently on a volume group for the SSD
 $ sudo vgdisplay
