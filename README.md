@@ -2,15 +2,172 @@
 
 > A high-powered shared computer operated by the Biomechanical Engineering Department at TU Delft
 
-# Hardware Details
+## Table of Contents
+
+- [Quickstart for existing users (Windows)](#quickstart)
+- [Walkthrough for new users (Windows)](#walkthrough)
+- [Hardware Details](#hardware-details)
+- [OS Details](#os-details)
+- [SSH Details](#ssh-details)
+- [User Software Details](#user-software-details)
+- [Other Notes](#other-notes)
+
+## Quickstart for existing users (Windows) <a name="quickstart"></a>
+
+This assumes you already went through the extensive walthrough below and
+just want to reconnect:
+
+- Open windows terminal
+- Run `ssh -L 59000:localhost:<your vpn port> username@isaac.3me.tudelft.nl`
+- Type in your password (**remember, you can't see it being typed in**)
+- Open VNC viewer on your Windows machine
+- Use your VNC password to connect
+  - You can reset your VNC password from an SSH terminal with `bme_vnc-passwd`
+
+
+## Walkthrough (Windows - you're a new user) <a name="walkthrough"></a>
+
+This walkthrough essentially sets up:
+
+- Using `ssh` to connect a terminal to `cbl1`
+- Launching a personal VNC server on `cbl1`
+- Opening an SSH tunnel to the VNC server
+- Using VNC Viewer to connect to the tunneled VNC server
+
+### 1. Connect to the server with SSH
+
+> **Note**: this assumes you have been given SSH credentials by (e.g.) an
+> admin. Your credentials will be a **username** + **password** combo. This combo
+> differs from your general TU Delft credentials. Once you have logged into
+> `cbl1.3me.tudelft.nl`, you can change your password in the terminal with `passwd`
+
+All connections to `cbl1.3me.tudelft.nl` must go via an SSH tunnel. SSH is a
+standard method for creating a secure connection to a remote machine. By "SSHing"
+into a server, you gain access to a terminal that can be used to run things on
+the server (via a command prompt).
+
+You always need an SSH connection to connect to `cbl1` - even 
+if you actually want a GUI (e.g. a remote desktop). Later steps in this guide
+describe setting up a remote desktop *via* the SSH connection.
+
+- Open a Windows PowerShell window
+
+  - SHIFT + right-click on your Windows desktop
+
+  - Click "Open PowerShell Window Here"
+
+- SSH into the server with your login credentials by typing `ssh
+  username@cbl1.3me.tudelft.nl`
+
+- Enter your password. **Note: you can't see any changes while typing
+  the password in (it's a security feature)**
+
+- You should now have an SSH connection to `cbl1.3me.tudelft.nl`. It will print a
+  welcome message, etc.
+
+- If you only need  terminal access, you can stop reading this
+  walkthrough - you're done :smile:
+
+
+### 2. Boot a VNC server on `cbl1`
+
+A VNC client is used to "remote desktop" connect to a VNC server on
+`cbl1.3me.tudelft.nl`. Each user runs their own VNC server on `cbl1`.
+
+- In your SSH session (established above) run `cbl_vnc-start`. If
+  necessary, type a new VNC password. You can change the password
+  later with `cbl_vnc-passwd`.
+
+- The `cbl_vnc-start` command should, before completing, print some
+  help documentation. From this, **you need to rememeber**:
+
+  - The VNC password you set
+    - **this is different from your SSH password**
+    - It is limited to 6 characters
+    - It does not need to be secure, because your VNC connection
+      always goes via your (secure) SSH connection
+  - The VNC server's port, printed in the terminal (e.g. `6901`)
+    - The `cbl_vnc-start` should print this in a large banner, or some
+      explanation text
+
+- A VNC server is now running on `cbl1`. However, it is hidden behind
+  `cbl1`'s firewall, which only permits SSH connections.
+
+
+### 3. Setup a SSH tunnel to the VNC server
+
+`cbl1` only allows external connections via SSH. All services
+(e.g. VNC) must connect via an SSH tunnel. This step sets up a tunnel
+through the SSH connection through to the VNC server you booted in the
+previous step.
+
+- Exit the SSH connection to `cbl1` that was used in previous steps by
+  either:
+
+  - Typing `exit` in the terminal (to `exit` the SSH session)
+  - Pressing CTRL+D to interrupt+exit the terminal
+  - Closing the Powershell window
+
+- Open a new SSH session to `cbl1` with tunelling enabled by running
+  the command below (note: `<your VNC server port>` is printed during
+  the previous step):
+
+```bash
+ssh -L 59000:localhost:<your VNC server port> username@cbl1.3me.tudelft.nl
+
+# example: ssh -L 59000:localhost:6901 adam@cbl1.3me.tudelft.nl
+```
+
+- You should now have a new SSH session open that looks exactly like
+  the previous one. It is essentially the same, but now *also* tunnels
+  any connections to `localhost:59000` on your machine to `<your VNC
+  server port>` on `cbl1`.
+
+
+### 4. Install + setup VNC client on your machine
+
+- Download a VNC client. I used VNC Viewer, from [here](https://www.realvnc.com/en/connect/download/viewer/)
+
+- Other VNC clients (e.g. Remmina) also seem to work, but I only
+  tested with VNC Viewer on Windows
+
+
+### 5. Use the client to connect to the VNC server via the tunnel
+
+- In your VNC client, connect to `localhost:59000`, which is the
+  local-side of your (opened in the previous step) SSH tunnel to your
+  VNC server (also a previous step) on `cbl1`
+
+- If you receive warnings about connection security (e.g. encyption)
+  you can ignore these. The connection between the VNC client and
+  `localhost:59000` is insecure, but local (to your machine). The
+  actual data is transported via the (encrypted) SSH tunnel, which is
+  secure - the VNC client doesn't "know" that's whats happening.
+
+- Use your VNC password when connecting to the machine with the VNC
+  client.
+
+  - Note: you can change your password in the SSH session with
+    `cbl_vnc-passwd`
+
+  - Note #2: VNC passwords are usually max. 6 chars, so your usual
+    password might've been truncated
+
+- Once connected, you should see a (somewhat rough-looking) Linux
+  desktop
+  
+You're done! woohoo! :smile:
+
+
+## Hardware Details <a name="hardware-details"></a>
 
 **tl;dr**: 2x64-core processors (256 threads), 256 GB memory, 2x RTX A5000 GPUs, 2 TB SSD, 8 TB HDD
 
 | Interface | MAC Address | Physical Location |
 | - | - | - |
-| `enxb03af2b6059f` | `b0:3a:f2:b6:05:9f` | top port |
-| `eno1np0` | `3c:ec:ef:ca:9b:70` | middle port (this is what is plugged into the TUD network) |
-| `eno2np1` | `3c:ec:ef:ca:9b:71` | bottom port |
+| `enxb03af2b6059f` | `b0:3a:f2:b6:05:9f` | closest to PSU |
+| `eno1np0` | `3c:ec:ef:ca:9b:70` | middle from PSU |
+| `eno2np1` | `3c:ec:ef:ca:9b:71` | farthest from PSU |
 
 ```bash
 # count physical processors
@@ -40,9 +197,9 @@ nvme0n1                   259:0    0   1.8T  0 disk
   └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /var/snap/firefox/common/host-hunspell
 ```
 
-# OS Details
+## OS Details <a name="os-details"></a>
 
-**tl;dr**: Ubuntu 22, Logical Volume Management (LVM)
+**tl;dr**: Ubuntu 22, installed with Logical Volume Management (LVM)
 
 | Server Detail | Value | Comment |
 | - | - | - |
@@ -51,7 +208,7 @@ nvme0n1                   259:0    0   1.8T  0 disk
 | Internet Domain Name | `isaac.3me.tudelft.nl` | Globally true |
 | Firewall | SSH (TCP/22) only (+ICMP) | All connections must be tunneled via SSH |
 
-## SSH Details
+## SSH Details <a name="ssh-details"></a>
 
 ```bash
 $ ssh-keyscan -t ecdsa isaac.3me.tudelft.nl > key.pub
@@ -62,87 +219,24 @@ $ ssh-keygen -l -f key.pub -E sha256
 ```
 | SSH ECDSA | isaac.3me.tudelft.nl ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEYIsORj6P8jGCvJFbQngiesjF0DGvtZunslHiRkTICdCsQQDLqsPORY/FcFNRyB04so1Mf1hVE5ZmlHYILnXzQ=
 
+## User Software Details <a name="user-software-details"></a>
 
-# Computer Details (Work in Progress)
+| Software Package | Installation Method | Notes |
+| - | - | - |
+| Firefox | apt | Primary Web Browser |
+| OpenSim Creator | manual source build + install | To validate @adamkewley's purpose in life |
+| Python3 | apt | `Python 3.10` |
+| MATLAB | manual binary install | R2022b |
+| Anaconda | manual binary install | Installed to `/opt/anaconda`, added to `etc/profile`, so that all users can use `conda` etc in their terminals |
+| Julia | apt | 1.8.5 |
+| `opensim-core` | manual source build + install | Built + installed with script in this repo, has Moco and python support |
+| Blender | manual binary install | 3.4.1 |
+| SCONE | manual binary install | TODO |
+| FEBio | manual binary install | TODO |
+| Abaqus | manual binary install | TODO |
+| Tensorflow | TODO | TODO |
 
-- hostname: `isaac`
-- SSH ECDSA: `SHA256:mc5iQGpMA7KzS4gxa1VrYj5aKLvq7qBwOS+DnkxxzM0`
-- SSH ED25519 fingerprint: `SHA256:wYV24VyXQHTrLsTY01iD5jDZiy2mdJmhwn95HkQ1hM0`
-- MAC addresses:
-
-- Current local IP (temporary): `10.211.34.72`
-- `uname -a`: `Linux isaac 5.15.0-60-generic #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux`
-- `nvidia-smi`: `NVIDIA-SMI 525.78.01    Driver Version: 525.78.01    CUDA Version: 12.0`
-- Desktop stack: `xfce` X environment launched via TigerVNC
-
-# Current Work Plan
-
-- **Phase 1**: Setup core OS + drivers + SSH:
-
-    - [x] Install Ubuntu as a base OS, because it’s typically the most popular Linux distro for end-users
-
-    - [x] Ensure BIOS is configured to auto-boot into that OS
-
-    - [x] Set up internet connection and SSH
-    
-        - [x] Plug in to wall
-        - [x] Ensure TUD DHCP assigns the network interfaces an IP (i.e. there's a physical + ethernet + DHCP connection)
-        - [x] Ticket IT to enable network access from the machine (requires MAC addr) - `C230113189`
-        - [x] Handle ticket responses, etc. - fully resolve it
-    
-    - [x] Set up additional drivers (specificlly, Nvidia, CUDA, etc.)
-    
-    - [x] Create `sudo` accounts:
-    
-        - [x] `adam` - for initial setup
-    
-    - [x] Set up VNC such that users with SSH access an access a remote desktop for the machine.
-
-    - [x] Set up a firewall such that the machine only accepts SSH connections (VNC would be *via* an SSH tunnel)
-    
-        - This is so that we know for a fact that the only way to access the machine is via a valid, encrypted, SSH tunnel with an active user account on the machine – it means we don’t have to security review all servers etc. that are running on the machine and we can activate/deactivate people by just deactivating their Linux account (rather than also having to deactivate accounts on other services hosted from the machine)
-    
-    - [ ] Ensure we can all connect to the machine and are happy with the basic connection + desktop setup
-    - [x] Record network interface information (notably: MAC addresses) for IT ticketing later
-    - [x] Ticket IT to reconfigure their network such that the machine operates as a server:
-
-        - [x] Provide them with a MAC address
-        - [x] Also request the domain name `isaac.3me.tudelft.nl`
-
-    - [x] Ensure the machine can be connected to remotely via the address, etc.
-    - [x] List any relevant driver/OS versions in this README
-
-- **Phase 2**: Research commissioning:
- 
-    - [x] Setup GitHub repo for documenting, posting issues related to, etc. the machine (e.g. as we have for the CBL one: https://github.com/ComputationalBiomechanicsLab/systems)
-    
-    - [ ] Build and install any research-level software (OpenSim, FEBio, etc.).
-        - [x] Firefox
-        - [x] OpenSim Creator
-        - [x] Python3
-        - [x] MATLAB
-        - [x] Anaconda (installed to `/opt/anaconda`, add to `/etc/profile`)
-        - [x] Julia
-        - [ ] OpenSim Core (no GUI - annoying to build on Linux)
-        - [x] OpenSim Creator
-        - [x] Blender
-        - [ ] SCONE
-        - [ ] FEBio? Abaqus? Tensorflow?
-        - [ ] Try to document version numbers for the GitHub guide
-    
-    - [ ] Write user guide, similar to how we already do it for the CBL machine
-    
-    - [ ] Onboard researchers
-
- 
-- **Phase 3**: Maintenance
- 
-    - Mostly leave the machine alone until someone actually has a problem
-    - Use the GitHub repo to document problems/changes
-    - Occasionally (every couple of months) login and ensure there’s enough disk space, deactivate unused user accounts, generally just ensure the machine’s mostly fine
-    - 
-
-# Notes
+# Other Notes <a name="other-notes"></a>
 
 - LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
 ```bash
