@@ -277,6 +277,61 @@ $ ssh-keygen -l -f key.pub -E sha256
 | Tensorflow | TODO | TODO |
 
 
+## F&Qs
+
+## Q: How do I create my own Conda Environment?
+
+A: You can either:
+
+- **If you're using a remote GUI desktop via VNC**:
+  - Open `anaconda-navigator` via a terminal
+  - Click `Environments` on the left-side in Anaconda Navigator
+  - Create a new environment
+  - Ensure your new environment is activated
+  - All applications booted via the navigator should then use your new environment
+
+- **If you're using a terminal (e.g. via SSH)**:
+  - Ensure you have initialized `conda` for your terminal: `conda init` (reopen your shell with `exit` etc.)
+  - List available python versions with `conda search python`
+  - Create it via (e.g.) `conda create --name your_envname  python=3.8.18`
+  - Activate it via `conda activate your_envname`
+  - Test it with (e.g.) `python --version` (should print `Python 3.8.18` if following the other example commands)
+
+
+## Q: How do I setup OpenSim Python Scripting?
+
+A: The easiest way to use the OpenSim API via Python is to use a conda
+environment as they outline [here](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Conda+Package). The
+conda forge page for the package, where you can find more information, is [here](https://anaconda.org/opensim-org/opensim).
+
+These steps must be performed in a terminal (Anaconda Navigator was being extremely
+iffy about it):
+
+```bash
+# BEFORE STARTING, SEE: https://anaconda.org/opensim-org/opensim/files to figure
+# out which versions of python are supported by opensim
+
+# add conda-forge channel
+conda config --remove channels conda-forge
+
+# create relevant conda environment that can use OpenSim
+conda create --channel conda-forge --name my_env_name python=3.11.5
+
+# activate the environment
+conda activate my_env_name
+
+# install opensim into the environment
+conda install -c opensim-org opensim
+
+# test that it works (should print OpenSim's version to the console)
+python -c "import opensim; print(opensim.__version__);"
+```
+
+You can then use `my_env_name` (or whatever you called it) in the terminal, or
+activate it via Anaconda Navigator (the problems I encountered were only during
+installation).
+
+
 # 🗒️ Other Notes <a name="other-notes"></a>
 
 ## Logical Volume Management (LVM) Commands
