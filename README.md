@@ -275,10 +275,10 @@ $ ssh-keygen -l -f key.pub -E sha256
 | Julia | apt | 1.8.5 |
 | `opensim-core` | manual source build + install | `4.4.1`, installed in `/usr/local`, see `setup_scripts/opensim.sh` for build details |
 | Blender | manual binary install | `3.4.1`` |
-| SCONE | manual binary install | TODO |
-| FEBio | manual binary install | TODO |
+| SCONE | manual binary install | `2.2` |
+| FEBio | manual binary install | `2.3.0` |
 | Abaqus | manual binary install | TODO |
-| Tensorflow | TODO | TODO |
+| Tensorflow | pip install on base system and base conda env | `2.13.1` |
 | `gfortran` / `gcc` / `g++` | apt | `11.4.0` |
 
 
