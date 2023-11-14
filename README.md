@@ -14,6 +14,10 @@
 - [Hardware Details](#hardware-details)
 - [OS Details](#os-details)
 - [SSH Details](#ssh-details)
+- [FAQs](#faq)
+  1. [Q: How do I create my own Conda Environment?](#faq-q-conda-env-setup)
+  2. [Q: How do I setup tensorflow?](#faq-q-tensorflow-setup)
+  3. [Q: How do I setup OpenSim Python Scripting](#faq-q-opensim-python-setup)
 - [User Software Details](#user-software-details)
 - [Other Notes](#other-notes)
 
@@ -278,9 +282,9 @@ $ ssh-keygen -l -f key.pub -E sha256
 | `gfortran` / `gcc` / `g++` | apt | `11.4.0` |
 
 
-## F&Qs
+## FAQs <a name="faq"></a>
 
-## Q: How do I create my own Conda Environment?
+### 1. Q: How do I create my own Conda Environment? <a name="faq-q-conda-env-setup"></a>
 
 A: You can either:
 
@@ -299,7 +303,54 @@ A: You can either:
   - Test it with (e.g.) `python --version` (should print `Python 3.8.18` if following the other example commands)
 
 
-## Q: How do I setup OpenSim Python Scripting?
+### 2. Q: How do I setup tensorflow? <a name="faq-q-tensorflow-setup"></a>
+
+A: `isaac` (the base system) has been configured with the appropriate NVIDIA,
+Cuda, cuDNN, and TensorRT libraries, so you can run ad-hoc tensorflow tests
+in that. E.g.:
+
+```bash
+/usr/bin/python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+```
+
+**The recommended way to run research software is to use conda, though**. This
+is because your research code may use a different set of libraries in conjunction
+with tensorflow. The `base` environment on `isaac` has one version installed:
+
+```bash
+conda run -n base python -c "import tensorflow as tf; print(tf.config.list_physical_devices(\'GPU\'))"
+```
+
+But, for your research, it is recommended that you create your own, new, `conda`
+environment, install your version of `tensorflow` (+ your other libs) into it,
+and then ensure it all works together. See "How do I create my own Conda Environment?"
+above for a quick overview of how to do that.
+
+Specifically, you'll end up writing something like below. Quick testing on `isaac`
+indicates that you'll need to use python >= 3.10 for GPU acceleration to work:
+
+```bash
+# example setup
+#
+# the code below was tested with:
+#
+# - WORKS:  3.11.5  (conda create --name test_tensorflow python=3.11.5)
+# - WORKS:  3.10.13 (conda create --name test_tensorflow python=3.10.13)
+# - BROKEN: 3.9.18  (conda create --name test_tensorflow python=3.9.18)
+# - BROKEN: 3.8.18  (conda create --name test_tensorflow python=3.8.18)
+
+conda create --name test_tensorflow python=3.11.5
+conda install -n test_tensorflow cudatoolkit cudnn tensorflow[and-cuda]
+conda run -n test_tensorflow python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+# if GPU acceleration is working, the `conda run` should print:
+#     [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU')]
+# (i.e. "tensorflow thinks isaac has two GPUs")
+
+# activate the environment with `conda activate test_tensorflow`
+```
+
+### 3. Q: How do I setup OpenSim Python Scripting? <a name="faq-q-opensim-python-setup"></a>
 
 A: The easiest way to use the OpenSim API via Python is to use a conda
 environment as they outline [here](https://simtk-confluence.stanford.edu:8443/display/OpenSim/Conda+Package). The
@@ -333,9 +384,9 @@ activate it via Anaconda Navigator (the problems I encountered were only during
 installation).
 
 
-# 🗒️ Other Notes <a name="other-notes"></a>
+## 🗒️ Other Notes <a name="other-notes"></a>
 
-## Logical Volume Management (LVM) Commands
+### Logical Volume Management (LVM) Commands
 
 LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
 
