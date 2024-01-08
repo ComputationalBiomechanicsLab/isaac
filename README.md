@@ -21,6 +21,8 @@
   4. [Q: How do I run ABAQUS jobs?](#faq-q-abaqus-jobs)
   5. [Q: How do I copy files to/from Isaac?](#faq-q-copy-files)
 - [User Software Details](#user-software-details)
+  1. [Logical Volume Management (LVM) Commands](#other-lvm-commands)
+  2. [How to install ABAQUS on Ubuntu](#other-how-to-install-abaqus)
 - [Other Notes](#other-notes)
 
 ## ⚡ Quickstart for existing users (Windows) <a name="quickstart"></a>
@@ -426,7 +428,7 @@ files, etc.). A popular Windows client is [WinSCP](https://winscp.net/eng/index.
 
 ## 🗒️ Other Notes <a name="other-notes"></a>
 
-### Logical Volume Management (LVM) Commands
+### 1. Logical Volume Management (LVM) Commands <a name="other-lvm-commands"></a>
 
 LVM commands begin with prefixing `pv` for physical drive (volume), `vg` for volume group, and `lv` for logical volume within that group
 
@@ -511,3 +513,121 @@ $ sudo lvdisplay
   - currently set to     256
   Block device           253:1
 ```
+
+### 2. How to install ABAQUS on Ubuntu <a name="other-how-to-install-abaqus"></a>
+
+> ℹ️ **Note**
+>
+> This is effectively a condensed version of notes from the related [issue](https://github.com/ComputationalBiomechanicsLab/isaac/issues/12),
+> where you might find more, but scattered, information.
+
+ABAQUS doesn't officially support Ubuntu, so some hacks were necessary. Here
+is a **rough** list of the steps taken on `isaac`:
+
+- **SYSTEM CHANGE**: Switched Debian's `sh` implementation from `dash` (Debian's default) to `bash` (what
+  ABAQUS actually requires). This was done system-wide by deleting the existing `sh --> dash`
+  softlink in `/usr/bin` and replacing it with `sh --> bash` with `rm sh && ln -s bash sh`. It's
+  necessary because ABAQUS's install scripts contain bash-specific syntax.
+
+- **SYSTEM CHANGE**: Edited `/etc/hosts` `127.0.1.1 isaac` entry to `127.0.0.1 isaac`. The
+  old entry is a legacy thing. Changing it is necessary if you want `abq verify all` to pass
+  (see issue #12 for comments on why, but tl;dr, the verification suite uses ssh via the
+  hostname and assumes it's == `localhost`).
+
+- **APT DEPENDENCY INSTALL**: These were mentioned in [this](https://github.com/imirzov/Install-Abaqus-2019-on-Ubuntu-18.04-LTS) guide,
+  but might not be necessary (I didn't check):
+
+```bash
+sudo apt install ksh gcc g++ gfortran libstdc++5 build-essential make libjpeg62
+sudo apt install libmotif-dev libmotif-common rpm
+```
+
+- **DEPENDENCY INSTALL**: Installed Intel OneAPI via the method described [here](https://gist.github.com/SomajitDey/aeb6eb4c8083185e06800e1ece4be1bd).
+  It's necessary because open-source FORTRAN compilers (e.g. `gfortran`) fail ABAQUS's `abq verify all` test suite. Here's
+  a copy of the code that was ran on Isaac:
+
+```bash
+curl -Lo- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | sudo gpg --dearmor -o /usr/share/keyrings/oneapi-archive-keyring.gpg
+sudo tee /etc/apt/sources.list.d/oneAPI.list <<< "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main"
+sudo apt update
+sudo apt install intel-oneapi-compiler-fortran
+# sudo apt install intel-oneapi-mkl  # optional
+
+# optionally, add this to `~/.bashrc` to source it:
+# source /opt/intel/oneapi/setvars.sh > /dev/null
+```
+
+- **SYSTEM CHANGE**: Softlink the Intel OneAPI FORTRAN compiler system-wide as `ifort`, which is
+  how ABAQUS addresses it (e.g. in scripts). This is necessary for `abq verify all` to pass.
+
+```bash
+ln -s /opt/intel/oneapi/compiler/latest/bin/ifort ifort
+```
+
+- **LOCAL ENVIRONMENT CHANGE**: Following [this](https://github.com/imirzov/Install-Abaqus-2019-on-Ubuntu-18.04-LTS)
+  guide, it's necessary to set `DSYAuthOS` etc. to "fool" the ABAQUS installer scripts into accepting Ubuntu
+  as the OS (otherwise, you'll get "OS not supported" messages):
+
+```bash
+# you need to set up your environment with this _before_ running `StartGUI.sh` installers etc.
+export DSYAuthOS_`lsb_release -si`=1 DSY_Force_OS=linux_a64
+```
+
+- **GET ABAQUS INSTALLER+HOTFIX**: Received an ABAQUS and hotfix installer from a license
+  holder (in my case, Mathias P). Directories received were called (e.g.) `golden` (presumably,
+  for ABAQUS "gold" release) and `hotfix`. The `golden` directory expanded out to a bunch (~6)
+  of `tar` files called (e.g.) `2022.AM_SIM_Abaqus_Extend.AllOS.1-5.tar`
+
+- **UNPACK/COPY INSTALLER TO /opt/abq2022**: As described in [source](https://github.com/imirzov/Install-Abaqus-2019-on-Ubuntu-18.04-LTS) guide,
+  copied the files to `/opt` and `chmod`ded them appropriately. Dir looked something like:
+
+```bash
+(base) adam@isaac:~/Desktop/abq2022/golden$ ls
+ 2022.AM_SIM_Abaqus_Extend.AllOS.1-5.tar   2022.AM_SIM_Abaqus_Extend.AllOS.3-5.tar   2022.AM_SIM_Abaqus_Extend.AllOS.5-5.tar   AM_SIM_Abaqus_Extend.AllOS                    PDir_SIMULIA_EstPrd
+ 2022.AM_SIM_Abaqus_Extend.AllOS.2-5.tar   2022.AM_SIM_Abaqus_Extend.AllOS.4-5.tar   Abaqus_2022.PDir_SIMULIA_EstPrd.1-1.tar  'Download Platform - Dassault Systèmes®.pdf'
+```
+
+- **BOOT VNC SERVER ON `root` ACCOUNT**: follow the SSH+VNC setup on the `root` account (not your own account with `sudo`). This
+  is necessary because the GUI installer seemed like the most reliable, but it _must_ be ran as `root`. If you (e.g.) try
+  running it on a non-`root` account (e.g. with `sudo`) then you'll end up with weird X-window-server issues where the
+  installer can't open a `root`-level window for your non-`root` account.
+
+- **INSTALL VIA `root` VNC**:
+
+  - Login to remove VNC desktop as `root`
+  - Open terminal
+  - Ensure **LOCAL ENVIRONMENT** is setup in the terminal (described above): "export DSYAuthOS_`lsb_release -si`=1 DSY_Force_OS=linux_a64"
+  - Run the `StartGUI.sh` installer (e.g. `/opt/abq2022/golden/AM_SIM_Abaqus_Extend.AllOS/1/StartGUI.sh`)
+  - Install to default directory, but with `/usr/` switched for `/opt` (i.e. install it to `/opt`)
+  - Follow the same procedure for `hotfix`
+
+- **CONFIGURE LICENSE**:
+
+  - Edit license file: `/opt/SIMULIA/EstProducts/2022/linux_a64/SMA/site/EstablishedProductsConfig.ini`
+  - Add licensing information:
+
+```ini
+[EstablishedProducts]
+LICENSE_SERVER_TYPE=flex
+FLEX_LICENSE_CONFIG=27000@HIDDEN_ASK_MATHIAS_SHOULD_BE_DN
+```
+
+- **VERIFY**:
+
+  - `abq` executable located at: `/opt/DassaultSystemes/SIMULIA/Commands/abq2022hf10` (depends on hotfix, or `hf`, level)
+  - Verify by running it with `verify all`:
+
+```bash
+/opt/DassaultSystemes/SIMULIA/Commands/abq2022hf10 verify all
+```
+
+  - See [issue #12](https://github.com/ComputationalBiomechanicsLab/isaac/issues/12) for any issues I encountered
+    when ensuring everything verifies
+
+- **LINK AS `abq` SYSTEM-WIDE**: This is so that users just have to write `abq`, rather than
+  needing to know the year, hotfix level, where it's installed, etc:
+
+```bash
+cd /usr/local/bin && ln -s /opt/DassaultSystemes/SIMULIA/Commands/abq2022hf10 abq
+```
+ba
