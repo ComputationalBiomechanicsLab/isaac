@@ -17,7 +17,9 @@
 - [FAQs](#faq)
   1. [Q: How do I create my own Conda Environment?](#faq-q-conda-env-setup)
   2. [Q: How do I setup tensorflow?](#faq-q-tensorflow-setup)
-  3. [Q: How do I setup OpenSim Python Scripting](#faq-q-opensim-python-setup)
+  3. [Q: How do I setup OpenSim Python Scripting?](#faq-q-opensim-python-setup)
+  4. [Q: How do I run ABAQUS jobs?](#faq-q-abaqus-jobs)
+  5. [Q: How do I copy files to/from Isaac?](#faq-q-copy-files)
 - [User Software Details](#user-software-details)
 - [Other Notes](#other-notes)
 
@@ -177,7 +179,7 @@ tunnel**, so that you can then remotely control `isaac` via a remote desktop.
   local-side of your (opened in the previous step) SSH tunnel to your
   VNC server (also a previous step) on `isaac`
 
-- If you receive warnings about connection security (e.g. encyption)
+- If you receive warnings about connection security (e.g. encryption)
   you can ignore these. The connection between the VNC client and
   `localhost:59000` is insecure, but local (to your machine). The
   actual data is transported via the (encrypted) SSH tunnel, which is
@@ -383,6 +385,44 @@ You can then use `my_env_name` (or whatever you called it) in the terminal, or
 activate it via Anaconda Navigator (the problems I encountered were only during
 installation).
 
+
+### 4. Q: How do I run ABAQUS jobs? <a name="faq-q-abaqus-jobs"></a>
+
+ABAQUS is available via a console using the `abq` command. This command links
+to the installation folder, which you can find with `echo $(readlink -f $(which abq))`:
+
+```bash
+echo $(readlink -f $(which abq))
+# at time of writing, prints: /opt/SIMULIA/EstProducts/2022/linux_a64/code/bin/SMALauncher
+```
+
+So, if `abq` isn't enough, other commands are available (at time of writing) in
+`/opt/SIMULIA/EstProducts/2022/linux_a64/code/bin/`.
+
+If you want to see the ABAQUS GUI, you'll need to access isaac via a VNC remote
+desktop (described above), because SSH alone isn't enough to view GUIs. Once you
+are on a VNC desktop, open a console and run `abq cae` to boot the UI.
+
+
+### 5. Q: How do I copy files to/from Isaac? <a name="faq-q-copy-files"></a>
+
+Your SSH connection also enables the ability to copy files to/from the machine
+into any folder your user account is allowed to write to (usually, your home
+folder, which includes your Desktop, and `/tmp`). All major OSes have an `scp`
+command for doing this:
+
+```bash
+# e.g. open a PowerShell (Windows), GNOME (Linux), or Terminal (Mac) window in
+# the directory you want to upload from, then:
+scp -r file-or-folder-to-copy YOUR_USERNAME@isaac.3me.tudelft.nl:where-it-goes-on-server
+```
+
+This will copy `file-or-folder-to-copy` to the path that's specified after the
+colon (`:`, in this case, `where-it-goes-on-server`).
+
+Alternatively, if you find using a terminal a little daunting/tedious, there
+are UI's available that do the same job (google: SSH copy files UI, SSHFS copy
+files, etc.). A popular Windows client is [WinSCP](https://winscp.net/eng/index.php).
 
 ## 🗒️ Other Notes <a name="other-notes"></a>
 
