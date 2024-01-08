@@ -630,4 +630,3 @@ FLEX_LICENSE_CONFIG=27000@HIDDEN_ASK_MATHIAS_SHOULD_BE_DN
 ```bash
 cd /usr/local/bin && ln -s /opt/DassaultSystemes/SIMULIA/Commands/abq2022hf10 abq
 ```
-ba
