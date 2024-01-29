@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# see:
+#
+# - https://www.thomas-krenn.com/en/wiki/Saving_Iptables_Firewall_Rules_Permanently
+# - https://www.cyberciti.biz/faq/how-to-save-iptables-firewall-rules-permanently-on-linux/
+
+iptables-save > /etc/iptables/rules.v4
+ip6tables-save > /etc/iptables/rules.v6
