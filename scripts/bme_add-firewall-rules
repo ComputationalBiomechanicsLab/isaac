@@ -23,6 +23,11 @@
 #   to be super-secure, just secure enough to stop basic network scanners from
 #   hacking it.
 
+# useful commands:
+#
+# - iptables -L --line-numbers  # list chains+rules with line numbers
+# - iptables -D CHAIN NUM  # delete rule via chain and line number (e.g. `iptables -D INPUT 5`)
+
 ssh_port=22
 
 # accept ICMP ping requests (handy for checking if the server is up)
@@ -41,6 +46,10 @@ ip6tables --append INPUT --match conntrack --ctstate ESTABLISHED,RELATED --jump 
 # workstation and are destined for this computer)
 iptables --append INPUT --in-interface lo --jump ACCEPT
 ip6tables --append INPUT --in-interface lo --jump ACCEPT
+
+# accept connections from RapidVM scanner
+iptables --append INPUT --protocol tcp --dport 21047 -j ACCEPT
+ip6tables --append INPUT --protocol tcp --dport 21047 -j ACCEPT
 
 # drop anything that isn't (externally) from SSH or (internally) from loopback
 iptables --append INPUT --jump REJECT
